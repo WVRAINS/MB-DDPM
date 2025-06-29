@@ -26,7 +26,7 @@ def diffusion(batch_size: int = 16,
               formatted_time='0',
               checkpoint_path: str = None):
     set_seed(seed)
-    data_o_case, data_o_ctrl, taxa_list = load_sample_pickle_data("checkpoints/raw_data.pkl")
+    data_o_case, data_o_ctrl, taxa_list = load_sample_pickle_data("data/raw_data.pkl")
     if train_type == "case":
         data_o = data_o_case.astype(float)
     else:
@@ -108,14 +108,14 @@ def reverse_diffusion(checkpoint_path: str = None,
             x_flattened = x.view(1, -1)
             results.append(x_flattened)
             print(i + 1)
-    title_filename = str(".//checkpoints//" + train_type + "_title.csv")
+    title_filename = str(".//data//" + train_type + "_title.csv")
     title = pd.read_csv(title_filename, header=None).iloc[0]
     results = torch.cat(results, dim=0)[:, :title.shape[0]].numpy()
     df = pd.DataFrame(results, columns=title)
     df.to_csv('.//data//epoch_' + str(num_epochs) + '_' + str(train_type) + '_' + str(add_method) + '_' + str(
         formatted_time) + '.csv', index=False)
 
-def load_sample_pickle_data(filename=".//checkpoints//raw_data.pkl"):
+def load_sample_pickle_data(filename=".//data//raw_data.pkl"):
     # Load raw dataset
     raw_data = pickle.load(open(filename, 'rb'))
     dataset = raw_data.iloc[:, 1:].values
